@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Signin from "./components/auth/Signin";
+import Signup from "./components/auth/Signup";
+import Home from "./components/Home";
+import Navbar from "./components/Navbar";
+import ForgetPassword from "./components/auth/ForgetPassword";
+import ConfirmPassword from "./components/auth/ConfirmPassword";
+import NotFound from "./components/NotFound";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/auth/signin" element={<Signin />} />
+        <Route path="/auth/signup" element={<Signup />} />
+        <Route path="/auth/forget-password" element={<ForgetPassword />} />
+        <Route path="/auth/reset-password" element={<ConfirmPassword />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
-
-export default App;
