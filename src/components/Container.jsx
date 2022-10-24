@@ -1,8 +1,7 @@
-import React from "react";
-
-
-export default function Container({ children, className }) {
-  return (
-    <div className={"max-w-screen-xl mx-auto items-center" + className}>{children}</div>
-  );
+export default function Container({children}) {
+    return (
+        <div className="mx-32 my-16 text-gray-400 flex-auto">
+            {children}
+        </div>
+    )
 }
