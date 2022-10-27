@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-
 import { getAll, getSorted } from "../../api/review";
+import { useAuth } from "../../hooks";
 import Background from "../Background";
 import Container from "../Container";
 import RatingModal from "../modals/RatingModal";
 import Navbar from "../Navbar";
 import SortBy from "./SortBy";
+import { motion, AnimatePresence, } from "framer-motion"
+
 
 export default function UserFilm() {
 
+    const { authInfo } = useAuth()
+    const { profile } = authInfo
     const [allReviews, setAllReviews] = useState([])
     const [displayModal, setDisplayModal] = useState(false)
     const [selectedReviewData, setSelectedReviewData] = useState({})
@@ -49,6 +53,7 @@ export default function UserFilm() {
         setSortValue(filterValue)
         setSelected(filterTerm)
         setAllReviews(response)
+        console.log(response)
     }
 
     // reverses sort order
@@ -61,13 +66,15 @@ export default function UserFilm() {
     useEffect(() => {
         const grabAllReviews = async () => {
             const response = await getAll()
-            // console.log(response)
             setAllReviews(response)
         }
         grabAllReviews()
     }, [displayModal])
 
 
+    useEffect(() => {
+        document.title = `${profile.name}'s films • TCDb`;
+    }, [profile.name, allReviews]);
 
 
     return (
@@ -75,18 +82,30 @@ export default function UserFilm() {
             <Navbar />
             <Container>
 
-                <SortBy 
+                <SortBy
                     sortValue={sortValue}
                     changeSort={changeSort}
-                    selected={selected} 
+                    selected={selected}
                     sortItems={sortItems}
-                    header="MY FILMS" />
+                    header="MY FILMS"
+                    numItems={allReviews.length} />
 
-                <div className="grid grid-cols-6 gap-1">
+                <motion.div
+                    layout
+                    className="grid gap-1 md:grid-cols-6 sm:grid-cols-4 xs:grid-cols-3 2xs:grid-cols-2 transition-all">
+                    <AnimatePresence>
                     {allReviews.length !== 0 && allReviews.map((review, index) => (
-                        <div key={index} className="flex flex-col group relative">
+                        <motion.div
+                            layout
+                            initial={{ scale: .2 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: .8 }}
+                            transition={{ delay: .3, duration: .4, type: "spring" }}
+                            key={index}
+                            className="flex flex-col group relative"
+                        >
                             <p
-                                className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-500 text-gray-200 px-1 rounded group-hover:opacity-100 whitespace-nowrap space-x-1 opacity-0 transition-all duration-400 ">
+                                className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-500 text-gray-200 px-1 rounded group-hover:block whitespace-nowrap space-x-1 hidden transition-all duration-400 ">
                                 <span>
                                     {review.movieName}
                                 </span>
@@ -98,31 +117,33 @@ export default function UserFilm() {
                                 src={`https://image.tmdb.org/t/p/w342${review.imgPath}`}
                                 alt="Poster"
                                 onClick={() => toggleModal(index)}
-                                className="rounded-lg border-4 border-slate-400 border-opacity-0 hover:border-opacity-100 transition-all ">
-                            </img>
-                            <p className="flex items-center justify-center space-x-2">
+                                className="rounded-lg border-4 border-slate-400 border-opacity-0 hover:border-opacity-100 transition-all " />
+                            <p className="flex items-center justify-center space-x-2 md:text-sm md:space-x-1 md:tracking-tight sm:tracking-tight sm:text-base sm:space-x-1 lg:text-lg lg:space-x-2 ">
                                 <span>
                                     Rating:
-                                    <span className="bg-slate-600 rounded mx-0.5 px-1 bg-opacity-60 text-white">
+                                    <span className="bg-slate-600 rounded mx-0.5 px-1 bg-opacity-60 text-white ">
                                         {review.rating}
                                     </span>
                                 </span>
                                 <span >{review.liked ? <FaHeart className="text-red-400" /> : <FaRegHeart />}
                                 </span>
                             </p>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                    </AnimatePresence>
+                </motion.div>
 
-                {displayModal &&
-                    <RatingModal
-                        title={selectedReviewData.title}
-                        releaseDate={selectedReviewData.releaseDate}
-                        imgPath={selectedReviewData.imgPath}
-                        reviewDetails={selectedReviewData.reviewDetails}
-                        toggleModal={() => setDisplayModal(!displayModal)}
-                    />
-                }
+                <AnimatePresence>
+                    {displayModal &&
+                        <RatingModal
+                            title={selectedReviewData.title}
+                            releaseDate={selectedReviewData.releaseDate}
+                            imgPath={selectedReviewData.imgPath}
+                            reviewDetails={selectedReviewData.reviewDetails}
+                            toggleModal={() => setDisplayModal(!displayModal)}
+                        />
+                    }
+                </AnimatePresence>
             </Container>
         </Background>
     )

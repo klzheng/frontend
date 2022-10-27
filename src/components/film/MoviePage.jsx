@@ -16,6 +16,7 @@ import Container from "../Container"
 import Navbar from "../Navbar"
 
 
+
 export default function MoviePage() {
     const [pageDetails, setPageDetails] = useState([])
     const [trailerKey, setTrailerKey] = useState("")
@@ -37,6 +38,11 @@ export default function MoviePage() {
     const apiVideo = `https://api.themoviedb.org/3/${res.mediaType}/${res.id}/videos?api_key=${process.env.REACT_APP_TMDB_API_KEY}&append_to_response=videos`
     const apiDetails = `https://api.themoviedb.org/3/${res.mediaType}/${res.id}?api_key=${process.env.REACT_APP_TMDB_API_KEY}`
     const apiCrew = `https://api.themoviedb.org/3/${res.mediaType}/${res.id}/credits?api_key=${process.env.REACT_APP_TMDB_API_KEY}`
+
+
+    useEffect(() => {
+        document.title = `${pageDetails.title || pageDetails.name} • TCDb`;
+    }, [pageDetails]);
 
 
     useEffect(() => {
@@ -84,7 +90,7 @@ export default function MoviePage() {
             <PosterBackground imgPath={pageDetails.backdrop_path} />
             <Container>
                 <Trailer trailerKey={trailerKey} />
-                <div className={" flex-col space-y-12 mt-20 "}>
+                <div className=" flex-col space-y-12 mt-12 sm:mt-0 ">
                     <Header
                         details={pageDetails}
                         releaseDate={releaseDate}

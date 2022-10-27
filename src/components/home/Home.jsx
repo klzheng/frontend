@@ -43,8 +43,8 @@ export default function Home() {
                 console.log(err)
             }
         }
-        fetchDetails() // eslint-disable-next-line
-    }, [])
+        fetchDetails() 
+    }, [setUrl, theatersUrl, trendingUrl])
 
 
     // redirect user to sign in page if no user already signed in
@@ -52,8 +52,12 @@ export default function Home() {
         if (!isLoggedIn) navigate("/auth/signin") // eslint-disable-next-line
     }, [isLoggedIn])
 
-    return (
+    // browser tab titling
+    useEffect(() => {
+        document.title = `TCDb`;
+    }, []);
 
+    return (
         <Background>
             <Navbar />
             <Container>
